@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>宋昱璇 · 个人简历</title>
+
+    <!-- 在线花体兜底：Great Vibes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
     <style>
         /* ================================================================
            自托管花体字（myself-font.ttf 与 index.html 同级）
            ================================================================ */
         @font-face {
             font-family: "MyselfFont";
-            src: url("myself-font.ttf") format("truetype");
+            src: url("./myself-font.ttf") format("truetype");
             font-weight: 400;
             font-style: normal;
             font-display: swap;
@@ -246,8 +252,8 @@
             background: none;
             border: none;
             cursor: none;
-            font-family: "MyselfFont", "Snell Roundhand", "Apple Chancery",
-                         "Brush Script MT", "Segoe Script", cursive, serif;
+            font-family: "Great Vibes", "MyselfFont", "Snell Roundhand",
+                         "Apple Chancery", "Brush Script MT", cursive, serif;
             font-style: normal;
             font-size: clamp(4.5rem, 14vw, 10rem);
             font-weight: 400;
@@ -2490,7 +2496,6 @@
                 cover.classList.add('hidden');
                 document.body.classList.add('entered');
 
-                // 通知音乐模块：用户已交互
                 try {
                     window.dispatchEvent(new Event('myself:enter'));
                 } catch (e) { /* noop */ }
