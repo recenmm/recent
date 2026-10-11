@@ -1,0 +1,2833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>宋昱璇 · 个人简历</title>
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6C8CFF;
+            --primary-glow: rgba(108, 140, 255, 0.3);
+            --secondary: #B388FF;
+            --accent: #FFD54F;
+            --bg-start: rgba(8, 11, 22, 0.82);
+            --bg-end: rgba(4, 6, 12, 0.94);
+            --card-bg: rgba(20, 30, 50, 0.55);
+            --card-border: rgba(108, 140, 255, 0.18);
+            --text: #E8EDF5;
+            --text-secondary: #A0B4D0;
+            --text-muted: #6A7F9F;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 16px 48px rgba(108, 140, 255, 0.12);
+            --radius: 16px;
+            --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            --nav-height: 60px;
+            --max-width: 1140px;
+            --touch-min: 44px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background:
+                radial-gradient(ellipse at 30% 20%, var(--bg-start) 0%, var(--bg-end) 100%),
+                url('https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&dl=ivana-cajina-asuyh-_ZX54-unsplash.jpg');
+            background-size: cover, cover;
+            background-attachment: fixed, fixed;
+            background-position: center, center;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            padding-bottom: 60px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ================================================================
+           封面 / 门户（Cover / Portal）
+           ================================================================ */
+        .cover {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 50% 40%, rgba(20, 26, 60, 0.95) 0%, rgba(3, 4, 10, 0.99) 70%),
+                #02030a;
+            transition: opacity 1s cubic-bezier(0.65, 0, 0.35, 1),
+                        transform 1s cubic-bezier(0.65, 0, 0.35, 1),
+                        visibility 1s;
+        }
+        .cover.hidden {
+            opacity: 0;
+            transform: scale(1.08);
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* 银河系星云背景层 */
+        .cover .galaxy-nebula {
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(ellipse 60% 45% at 30% 35%, rgba(108, 140, 255, 0.22) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 40% at 70% 60%, rgba(179, 136, 255, 0.20) 0%, transparent 62%),
+                radial-gradient(ellipse 70% 50% at 50% 50%, rgba(255, 213, 79, 0.05) 0%, transparent 65%);
+            filter: blur(40px);
+            animation: nebulaDrift 30s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes nebulaDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-2%, 1.5%) scale(1.05); }
+            100% { transform: translate(2%, -1%) scale(1.02); }
+        }
+
+        /* 银河螺旋光带 */
+        .cover .galaxy-spiral {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200vmax;
+            height: 200vmax;
+            transform: translate(-50%, -50%) rotate(0deg);
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(108, 140, 255, 0.06) 60deg,
+                rgba(179, 136, 255, 0.10) 120deg,
+                transparent 180deg,
+                rgba(108, 140, 255, 0.05) 240deg,
+                rgba(179, 136, 255, 0.08) 300deg,
+                transparent 360deg
+            );
+            filter: blur(60px);
+            animation: spiralRotate 90s linear infinite;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        @keyframes spiralRotate {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 封面上的星尘粒子（由 JS 绘制，与主画布分开） */
+        #cover-stars {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* 流星 */
+        .cover .shooting-star {
+            position: absolute;
+            width: 180px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 90%);
+            border-radius: 999px;
+            filter: drop-shadow(0 0 6px rgba(180, 200, 255, 0.9));
+            opacity: 0;
+            pointer-events: none;
+        }
+        .cover .shooting-star::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--primary);
+        }
+        .cover .shooting-star.s1 {
+            top: 18%;
+            left: -10%;
+            animation: shoot 6s ease-in 1.5s infinite;
+        }
+        .cover .shooting-star.s2 {
+            top: 62%;
+            left: -15%;
+            animation: shoot 9s ease-in 4s infinite;
+            animation-delay: 3.6s;
+            width: 140px;
+        }
+        .cover .shooting-star.s3 {
+            top: 38%;
+            left: -12%;
+            animation: shoot 7.5s ease-in 7s infinite;
+            animation-delay: 6.2s;
+            width: 220px;
+        }
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) rotate(-18deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            60% { opacity: 0.85; }
+            100% {
+                transform: translateX(140vw) rotate(-18deg);
+                opacity: 0;
+            }
+        }
+
+        /* 封面内容容器 */
+        .cover-inner {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 34px;
+            padding: 0 24px;
+            text-align: center;
+            animation: coverFadeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes coverFadeIn {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 小标题 */
+        .cover-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(160, 180, 208, 0.85);
+            opacity: 0;
+            animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+        }
+        .cover-eyebrow::before,
+        .cover-eyebrow::after {
+            content: '';
+            width: 42px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(108, 140, 255, 0.7), transparent);
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ====== 核心：myself 英文花体引导按钮 ====== */
+        .myself-btn {
+            position: relative;
+            display: inline-block;
+            padding: 10px 26px;
+            background: none;
+            border: none;
+            cursor: none;
+            font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT",
+                         "Segoe Script", "Gabriola", "Lucida Handwriting", cursive, serif;
+            font-style: italic;
+            font-size: clamp(4.2rem, 13vw, 9rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 2px;
+            color: transparent;
+            background-image: linear-gradient(
+                115deg,
+                #ffffff 0%,
+                #C6D4FF 25%,
+                #8FA8FF 45%,
+                #D4BFFF 62%,
+                #FFD54F 82%,
+                #FFF3C4 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            filter: drop-shadow(0 0 18px rgba(108, 140, 255, 0.35))
+                    drop-shadow(0 0 46px rgba(179, 136, 255, 0.22));
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                        filter 0.45s ease;
+            animation: myselfGlow 4.5s ease-in-out infinite;
+            user-select: none;
+        }
+        .myself-btn span {
+            display: inline-block;
+            transform: translateY(0.06em);
+        }
+        @keyframes myselfGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 16px rgba(108, 140, 255, 0.32))
+                        drop-shadow(0 0 40px rgba(179, 136, 255, 0.18));
+            }
+            50% {
+                filter: drop-shadow(0 0 26px rgba(108, 140, 255, 0.55))
+                        drop-shadow(0 0 60px rgba(179, 136, 255, 0.35));
+            }
+        }
+        .myself-btn::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            width: 62%;
+            height: 1px;
+            transform: translateX(-50%) scaleX(0.45);
+            background: linear-gradient(90deg, transparent, rgba(108, 140, 255, 0.75), rgba(179, 136, 255, 0.6), transparent);
+            opacity: 0.75;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+        }
+        .myself-btn:hover {
+            transform: translateY(-4px) scale(1.035);
+            filter: drop-shadow(0 0 30px rgba(108, 140, 255, 0.6))
+                    drop-shadow(0 0 70px rgba(179, 136, 255, 0.4));
+        }
+        .myself-btn:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            opacity: 1;
+        }
+        .myself-btn:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        /* 环绕光晕 */
+        .myself-halo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130%;
+            height: 130%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(108, 140, 255, 0.18) 0%, transparent 65%);
+            filter: blur(30px);
+            z-index: -1;
+            pointer-events: none;
+            animation: haloPulse 6s ease-in-out infinite;
+        }
+        @keyframes haloPulse {
+            0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.08); }
+        }
+
+        /* 副标题 */
+        .cover-sub {
+            font-size: 0.86rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(160, 180, 208, 0.7);
+            opacity: 0;
+            animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) 1.1s both;
+        }
+
+        /* 底部提示 */
+        .cover-hint {
+            position: absolute;
+            bottom: 38px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: rgba(160, 180, 208, 0.6);
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) 1.6s both;
+        }
+        .cover-hint .arrow {
+            width: 18px;
+            height: 18px;
+            border-right: 1.5px solid rgba(160, 180, 208, 0.6);
+            border-bottom: 1.5px solid rgba(160, 180, 208, 0.6);
+            transform: rotate(45deg);
+            animation: hintArrow 2s ease-in-out infinite;
+        }
+        @keyframes hintArrow {
+            0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.5; }
+            50% { transform: rotate(45deg) translateY(5px); opacity: 1; }
+        }
+
+        /* 封面右上角的装饰文本 */
+        .cover-corner {
+            position: absolute;
+            font-size: 0.66rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(160, 180, 208, 0.4);
+            pointer-events: none;
+        }
+        .cover-corner.tl { top: 30px; left: 34px; }
+        .cover-corner.tr { top: 30px; right: 34px; text-align: right; }
+        .cover-corner.bl { bottom: 30px; left: 34px; }
+        .cover-corner.br { bottom: 30px; right: 34px; text-align: right; }
+
+        /* 主内容初始隐藏，进入后显示 */
+        body.entered main,
+        body.entered .navbar,
+        body.entered .music-toggle,
+        body.entered .theme-toggle,
+        body.entered .back-top {
+            animation: contentReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes contentReveal {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================================================================
+           以下为主简历样式（与原文件一致，略作裁剪）
+           ================================================================ */
+        @media (hover: none) and (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-glow, .cursor-dot { display: none !important; }
+        }
+
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(
+                circle,
+                rgba(108, 140, 255, 0.14) 0%,
+                rgba(179, 136, 255, 0.08) 30%,
+                rgba(108, 140, 255, 0.03) 55%,
+                transparent 72%
+            );
+            transition: opacity 0.35s ease;
+            opacity: 0;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+        .cursor-glow.active { opacity: 1; }
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 12px var(--primary), 0 0 24px rgba(108, 140, 255, 0.5);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease, width 0.2s ease, height 0.2s ease;
+            opacity: 0;
+            will-change: transform;
+        }
+        .cursor-dot.active { opacity: 1; }
+        .cursor-dot.hovering {
+            width: 4px;
+            height: 4px;
+            box-shadow: 0 0 18px var(--primary), 0 0 36px rgba(108, 140, 255, 0.7);
+        }
+
+        a, button, .card, .skill-row, .explore-card, .competition-card, .edu-block,
+        .cert-card, .award, .navbar-links a, .theme-toggle, .back-top, .music-toggle,
+        .myself-btn {
+            cursor: none;
+        }
+
+        #universe-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-height);
+            background: rgba(10, 14, 26, 0.7);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid rgba(108, 140, 255, 0.12);
+            transition: background 0.3s, border-color 0.3s;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: var(--touch-min);
+        }
+        .navbar-brand .brand-icon {
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary-glow);
+            flex-shrink: 0;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            list-style: none;
+        }
+        .navbar-links a {
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .navbar-links a:hover,
+        .navbar-links a.active {
+            background: rgba(108, 140, 255, 0.15);
+            color: var(--primary);
+        }
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.4rem;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            min-width: var(--touch-min);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            padding: 18px 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: rgba(108, 140, 255, 0.35);
+        }
+
+        .section {
+            padding: 64px 0 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.15s; }
+        .reveal:nth-child(3) { transition-delay: 0.25s; }
+        .reveal:nth-child(4) { transition-delay: 0.35s; }
+        .reveal:nth-child(5) { transition-delay: 0.45s; }
+        .reveal:nth-child(6) { transition-delay: 0.55s; }
+        .reveal:nth-child(7) { transition-delay: 0.65s; }
+        .reveal:nth-child(8) { transition-delay: 0.75s; }
+        @media (prefers-reduced-motion: reduce) {
+            .section, .reveal { opacity: 1; transform: none; }
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .section-index {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -1px;
+            background: linear-gradient(160deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.55;
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .section-head-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .section-eyebrow {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+        .section-title .title-icon { font-size: 1.3rem; }
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(108, 140, 255, 0.45), rgba(108, 140, 255, 0.05));
+        }
+
+        .hero {
+            padding: 56px 0 28px;
+            position: relative;
+        }
+        .hero .container {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+            gap: 56px;
+            align-items: stretch;
+            text-align: left;
+        }
+        .hero-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            width: 36px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            flex-shrink: 0;
+        }
+        .hero-name-wrapper {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .hero-name {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1.08;
+            background: linear-gradient(120deg, var(--text) 10%, var(--primary) 65%, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex-shrink: 0;
+        }
+        .hero-quote {
+            font-size: 0.92rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-top: 18px;
+            opacity: 0.9;
+            letter-spacing: 0.3px;
+            padding-left: 16px;
+            border-left: 2px solid rgba(108, 140, 255, 0.45);
+        }
+        .hero-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 14px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+        .hero-summary {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            max-width: 580px;
+            margin-top: 14px;
+            line-height: 1.8;
+        }
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 22px;
+        }
+        .hero-tags .tag {
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(108, 140, 255, 0.12);
+            color: var(--text-secondary);
+            border: 1px solid rgba(108, 140, 255, 0.15);
+            transition: all 0.2s;
+        }
+        .hero-tags .tag.highlight {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border-color: transparent;
+        }
+        .hero-tags .tag:hover {
+            background: rgba(108, 140, 255, 0.25);
+            transform: scale(1.04);
+            color: var(--text);
+        }
+
+        .hero-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-card {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 34px 28px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px;
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(108, 140, 255, 0.7), transparent);
+        }
+        .profile-divider {
+            width: 56px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(108, 140, 255, 0.5), transparent);
+        }
+        .hero-avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(108, 140, 255, 0.4);
+            box-shadow: 0 0 0 8px rgba(108, 140, 255, 0.08), 0 0 32px var(--primary-glow);
+            transition: transform 0.25s, box-shadow 0.25s;
+            background: var(--card-bg);
+        }
+        .hero-avatar:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 36px rgba(108, 140, 255, 0.5);
+        }
+        .hero-qrcode {
+            width: 112px;
+            height: 112px;
+            padding: 8px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid rgba(108, 140, 255, 0.3);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35), 0 0 18px rgba(108, 140, 255, 0.12);
+            transition: transform 0.25s, box-shadow 0.25s;
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .hero-qrcode:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 26px rgba(108, 140, 255, 0.3);
+        }
+
+        .hero-contact {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 24px;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(108, 140, 255, 0.14);
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+            max-width: 580px;
+        }
+        .hero-contact .item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-contact .item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            fill: none;
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .hero-contact .copy-btn {
+            background: none;
+            border: 1px solid rgba(108, 140, 255, 0.2);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .hero-contact .copy-btn:hover {
+            background: rgba(108, 140, 255, 0.15);
+            border-color: rgba(108, 140, 255, 0.4);
+        }
+
+        .highlights-band {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+        .highlights-band:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(108, 140, 255, 0.35);
+        }
+        .highlights-band .stat {
+            position: relative;
+            padding: 30px 18px;
+            text-align: center;
+            transition: background var(--transition);
+        }
+        .highlights-band .stat:hover {
+            background: rgba(108, 140, 255, 0.07);
+        }
+        .highlights-band .stat + .stat::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 26%;
+            bottom: 26%;
+            width: 1px;
+            background: linear-gradient(180deg, transparent, rgba(108, 140, 255, 0.35), transparent);
+        }
+        .highlights-band .number {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .highlights-band .label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .skills-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 6px 30px;
+        }
+        .skill-row {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 24px;
+            padding: 22px 0;
+            border-bottom: 1px solid rgba(108, 140, 255, 0.1);
+            align-items: start;
+            transition: background var(--transition);
+        }
+        .skill-row:last-child { border-bottom: none; }
+        .skill-row:hover { background: rgba(108, 140, 255, 0.04); }
+        .skill-row h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            padding-top: 3px;
+        }
+        .skill-row h4::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            border-radius: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            flex-shrink: 0;
+        }
+        .skill-row .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-row .chips span {
+            background: rgba(108, 140, 255, 0.08);
+            border: 1px solid rgba(108, 140, 255, 0.14);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .skill-row .chips span:hover {
+            background: rgba(108, 140, 255, 0.2);
+            color: var(--text);
+            transform: translateY(-1px);
+        }
+        .skill-row .chips span.fun {
+            background: linear-gradient(135deg, var(--accent), #e0b868);
+            color: #1a1a2e;
+            font-weight: 700;
+            border-color: transparent;
+        }
+
+        .explore-card,
+        .competition-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 30px 34px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+        .explore-card::before,
+        .competition-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), rgba(255, 213, 79, 0) 55%);
+        }
+        .competition-card::before {
+            background: linear-gradient(90deg, var(--secondary), rgba(179, 136, 255, 0) 55%);
+        }
+        .explore-card:hover,
+        .competition-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: rgba(108, 140, 255, 0.35);
+        }
+        .explore-card .explore-head,
+        .competition-card .comp-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px 16px;
+            margin-bottom: 4px;
+        }
+        .explore-card .explore-title,
+        .competition-card .comp-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.3px;
+        }
+        .competition-card .comp-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .competition-card .comp-status {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: rgba(108, 140, 255, 0.12);
+            border: 1px solid rgba(108, 140, 255, 0.4);
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .explore-card .explore-meta,
+        .competition-card .comp-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+        .explore-card .tech,
+        .competition-card .tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0 4px;
+        }
+        .explore-card .tech span,
+        .competition-card .tech span {
+            background: rgba(108, 140, 255, 0.08);
+            border: 1px solid rgba(108, 140, 255, 0.14);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+        .competition-card .tech span {
+            background: rgba(179, 136, 255, 0.1);
+            border-color: rgba(179, 136, 255, 0.2);
+        }
+        .explore-card ul,
+        .competition-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 8px;
+            columns: 2;
+            column-gap: 44px;
+        }
+        .explore-card ul li,
+        .competition-card ul li {
+            break-inside: avoid;
+            padding: 7px 0 7px 22px;
+            position: relative;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+        .explore-card ul li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .competition-card ul li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .video-wrap {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px dashed rgba(108, 140, 255, 0.15);
+        }
+        .video-wrap .video-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        .video-wrap .video-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 213, 79, 0.2);
+        }
+        .video-frame {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(108, 140, 255, 0.15);
+            background: #000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .video-frame video {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            background: #000;
+        }
+        .video-caption {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .edu-awards-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: stretch;
+        }
+        .edu-block {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            margin-bottom: 0;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .edu-block::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), rgba(108, 140, 255, 0) 60%);
+        }
+        .edu-block:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: rgba(108, 140, 255, 0.35);
+        }
+        .edu-block .school {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .edu-block .major {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-top: 4px;
+        }
+        .edu-block .period {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .edu-block .courses {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(108, 140, 255, 0.18);
+            line-height: 1.6;
+        }
+        .awards-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px 28px;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .awards-panel:hover {
+            border-color: rgba(108, 140, 255, 0.3);
+        }
+        .awards-heading {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .cert-gallery-hint {
+            text-align: center;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+            animation: hintFade 3s ease-in-out infinite;
+        }
+        @keyframes hintFade {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .cert-gallery {
+            overflow: hidden;
+            margin-bottom: 20px;
+            padding: 10px 0 20px;
+            position: relative;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        }
+        .cert-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+            animation: certAutoScroll 18s linear infinite;
+        }
+        .cert-gallery:hover .cert-track {
+            animation-play-state: paused;
+        }
+        @keyframes certAutoScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .cert-gallery .cert-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            padding: 12px 12px 10px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            flex: 0 0 240px;
+            transition: all var(--transition);
+            text-align: center;
+        }
+        .cert-gallery .cert-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+            border-color: rgba(108, 140, 255, 0.35);
+        }
+        .cert-gallery .cert-card img {
+            width: 100%;
+            border-radius: 10px;
+            display: block;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(108, 140, 255, 0.1);
+            max-height: 170px;
+            object-fit: contain;
+        }
+        .cert-gallery .cert-card .cert-label {
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .cert-gallery .cert-card .cert-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .cert-card { cursor: pointer; }
+
+        .cert-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .cert-lightbox.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .cert-lightbox img {
+            max-width: 85vw;
+            max-height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(108, 140, 255, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .cert-lightbox.open img {
+            transform: scale(1);
+        }
+        .cert-lightbox .lb-close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .cert-lightbox .lb-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg);
+        }
+        .cert-lightbox .lb-caption {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .awards-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 0;
+        }
+        .awards-list .award {
+            background: rgba(108, 140, 255, 0.05);
+            border: 1px solid rgba(108, 140, 255, 0.12);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            gap: 6px;
+        }
+        .awards-list .award:hover {
+            background: rgba(108, 140, 255, 0.12);
+            border-color: rgba(108, 140, 255, 0.3);
+        }
+        .awards-list .award .name {
+            font-weight: 500;
+            color: var(--text);
+        }
+        .awards-list .award .source {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .awards-list .award .date {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            background: rgba(108, 140, 255, 0.1);
+            padding: 2px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(108, 140, 255, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 0 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(108, 140, 255, 0.08);
+            margin-top: 40px;
+        }
+
+        .back-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-top.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .back-top:hover {
+            box-shadow: 0 6px 28px rgba(108, 140, 255, 0.5);
+            transform: scale(1.08);
+        }
+
+        .music-toggle {
+            position: fixed;
+            top: 74px;
+            right: 20px;
+            z-index: 1100;
+            height: 44px;
+            padding: 0 20px 0 16px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(108, 140, 255, 0.35), rgba(179, 136, 255, 0.28));
+            backdrop-filter: blur(10px) saturate(180%);
+            -webkit-backdrop-filter: blur(10px) saturate(180%);
+            border: 1px solid rgba(108, 140, 255, 0.5);
+            color: #fff;
+            font-size: 0.88rem;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.25s;
+            box-shadow: 0 4px 20px rgba(108, 140, 255, 0.25);
+            animation: musicHint 2.4s ease-in-out infinite;
+        }
+        .music-toggle .music-icon {
+            font-size: 1.1rem;
+            display: inline-flex;
+        }
+        .music-toggle .music-text {
+            letter-spacing: 0.3px;
+        }
+        .music-toggle:hover {
+            background: linear-gradient(135deg, rgba(108, 140, 255, 0.55), rgba(179, 136, 255, 0.45));
+            border-color: rgba(108, 140, 255, 0.8);
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 6px 28px rgba(108, 140, 255, 0.4);
+        }
+        @keyframes musicHint {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(108, 140, 255, 0.25);
+            }
+            50% {
+                box-shadow: 0 4px 28px rgba(108, 140, 255, 0.55), 0 0 0 4px rgba(108, 140, 255, 0.08);
+            }
+        }
+        .music-toggle.playing {
+            background: linear-gradient(135deg, rgba(108, 140, 255, 0.85), rgba(179, 136, 255, 0.75));
+            border-color: rgba(108, 140, 255, 0.9);
+            box-shadow: 0 4px 24px rgba(108, 140, 255, 0.5);
+            animation: none;
+        }
+        .music-toggle.playing .music-icon {
+            animation: iconBounce 1s ease-in-out infinite;
+        }
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .music-toggle.attention {
+            animation: musicAttention 1.2s ease-in-out 3;
+            border-color: rgba(255, 213, 79, 0.9);
+            background: linear-gradient(135deg, rgba(255, 213, 79, 0.35), rgba(255, 179, 71, 0.28));
+            box-shadow: 0 0 28px rgba(255, 213, 79, 0.5);
+        }
+        @keyframes musicAttention {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 128px;
+            right: 20px;
+            z-index: 1000;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(10, 14, 26, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(108, 140, 255, 0.15);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: rgba(108, 140, 255, 0.15);
+            border-color: rgba(108, 140, 255, 0.3);
+            color: var(--text);
+        }
+
+        /* ===== 打印样式 ===== */
+        @media print {
+            .cover { display: none !important; }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                padding-top: 0 !important;
+                font-size: 11pt;
+                cursor: auto !important;
+            }
+            #universe-canvas,
+            .navbar,
+            .back-top,
+            .theme-toggle,
+            .nav-toggle,
+            .cursor-glow,
+            .cursor-dot,
+            .music-toggle {
+                display: none !important;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 0.4in !important;
+            }
+            .hero { padding: 0.2in 0 0.1in !important; }
+            .hero .container { display: block !important; text-align: left !important; }
+            .hero-right {
+                display: flex !important;
+                justify-content: flex-end !important;
+                margin-top: 0.15in;
+            }
+            .profile-card {
+                border: none !important;
+                box-shadow: none !important;
+                background: none !important;
+                backdrop-filter: none !important;
+                padding: 0 !important;
+                max-width: none !important;
+                flex-direction: row !important;
+            }
+            .profile-divider { display: none !important; }
+            .hero-name {
+                font-size: 22pt !important;
+                -webkit-text-fill-color: #1a365d !important;
+                background: none !important;
+            }
+            .hero-avatar,
+            .hero-qrcode {
+                width: 0.8in !important;
+                height: 0.8in !important;
+                padding: 0 !important;
+            }
+            .section {
+                padding: 0.18in 0 0.08in !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .section-head { margin-bottom: 0.12in !important; }
+            .section-index, .section-eyebrow { color: #666 !important; -webkit-text-fill-color: #666 !important; background: none !important; }
+            .section-line { display: none !important; }
+            .highlights-band,
+            .skills-panel,
+            .edu-block,
+            .awards-panel,
+            .explore-card,
+            .competition-card,
+            .cert-gallery .cert-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+                backdrop-filter: none !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                flex: 0 0 200px !important;
+            }
+            .cert-gallery { overflow: visible !important; -webkit-mask-image: none !important; mask-image: none !important; }
+            .cert-track { animation: none !important; flex-wrap: wrap !important; width: 100% !important; }
+            .cert-gallery-hint { display: none !important; }
+            .cert-lightbox { display: none !important; }
+            .highlights-band { grid-template-columns: repeat(3, 1fr) !important; }
+            .highlights-band .stat + .stat::before { background: #ddd !important; }
+            .highlights-band .number { -webkit-text-fill-color: #1a365d !important; }
+            .skill-row { border-bottom: 1px solid #ddd !important; }
+            .explore-card ul,
+            .competition-card ul { columns: 1 !important; }
+            .edu-awards-grid { grid-template-columns: 1fr 1fr !important; gap: 0.15in !important; }
+            .video-frame { display: none !important; }
+            .video-wrap .video-title::after {
+                content: "（视频见线上版本）";
+                font-weight: 400;
+                font-size: 0.7rem;
+                color: #666;
+            }
+            .explore-card::before,
+            .competition-card::before,
+            .edu-block::before { background: #6C8CFF !important; }
+            .skill-row h4::before { background: #6C8CFF !important; }
+            .skill-row .chips span.fun {
+                background: #FFD54F !important;
+                color: #1a1a2e !important;
+            }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 900px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                text-align: center;
+                justify-items: center;
+            }
+            .hero-content { align-items: center; }
+            .hero-name-wrapper,
+            .hero-tags { justify-content: center; }
+            .hero-quote { border-left: none; padding-left: 0; }
+            .hero-summary,
+            .hero-contact { margin-left: auto; margin-right: auto; }
+            .hero-right { width: 100%; }
+            .profile-card { max-width: 320px; margin: 0 auto; }
+            .edu-awards-grid { grid-template-columns: 1fr; }
+            .explore-card ul,
+            .competition-card ul { columns: 1; }
+            .section { padding: 52px 0 18px; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: rgba(10, 14, 26, 0.95);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                padding: 12px 16px;
+                gap: 4px;
+                border-bottom: 1px solid var(--card-border);
+            }
+            .navbar-links.open { display: flex; }
+            .navbar-links a {
+                padding: 12px 14px;
+                border-radius: 8px;
+                font-size: 0.92rem;
+                min-height: var(--touch-min);
+            }
+            .nav-toggle { display: flex; }
+            .highlights-band { grid-template-columns: repeat(2, 1fr); }
+            .highlights-band .stat:nth-child(n+3) { border-top: 1px solid rgba(108, 140, 255, 0.12); }
+            .highlights-band .stat { padding: 22px 14px; }
+            .highlights-band .number { font-size: 1.5rem; }
+            .skills-panel { padding: 4px 20px; }
+            .skill-row { grid-template-columns: 1fr; gap: 10px; padding: 18px 0; }
+            .awards-list { grid-template-columns: 1fr; }
+            .hero-contact { gap: 10px 14px; font-size: 0.8rem; }
+            .cert-gallery .cert-card {
+                flex: 0 0 200px;
+            }
+            .explore-card,
+            .competition-card {
+                padding: 22px 22px;
+            }
+            .section { padding: 40px 0 16px; }
+            .section-head { gap: 14px; margin-bottom: 22px; }
+            .section-index { font-size: 1.9rem; }
+            .section-title { font-size: 1.15rem; }
+
+            .music-toggle {
+                top: 68px;
+                right: 14px;
+                height: 38px;
+                padding: 0 14px 0 12px;
+                font-size: 0.78rem;
+                gap: 6px;
+                border-radius: 20px;
+            }
+            .music-toggle .music-icon {
+                font-size: 0.95rem;
+            }
+
+            .theme-toggle {
+                top: 116px;
+                right: 14px;
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .highlights-band .stat { padding: 16px 10px; }
+            .highlights-band .number { font-size: 1.2rem; }
+            .highlights-band .label { font-size: 0.7rem; }
+            .hero-name { font-size: 2rem; }
+            .hero-avatar { width: 96px; height: 96px; }
+            .hero-qrcode { width: 96px; height: 96px; }
+            .hero-contact { grid-template-columns: 1fr; }
+            .profile-card { padding: 26px 20px 24px; }
+            .container { padding: 0 12px; }
+            .explore-card,
+            .competition-card {
+                padding: 18px 16px;
+            }
+            .cert-gallery .cert-card {
+                flex: 0 0 150px;
+            }
+            .section { padding: 34px 0 12px; }
+            .section-index { font-size: 1.6rem; }
+            .section-eyebrow { letter-spacing: 2.5px; }
+            .section-title { font-size: 1.05rem; }
+            .skills-panel { padding: 2px 16px; }
+            .back-top {
+                bottom: 16px;
+                right: 16px;
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
+            }
+
+            .music-toggle {
+                top: 66px;
+                right: 10px;
+                height: 36px;
+                padding: 0 12px 0 10px;
+                font-size: 0.72rem;
+                gap: 4px;
+                border-radius: 18px;
+            }
+            .music-toggle .music-icon {
+                font-size: 0.9rem;
+            }
+
+            .theme-toggle {
+                top: 110px;
+                right: 12px;
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+
+            .navbar-brand { font-size: 0.95rem; }
+            .navbar-brand .brand-icon { width: 22px; height: 22px; }
+
+            .cover-corner { display: none; }
+            .cover-eyebrow { letter-spacing: 4px; font-size: 0.62rem; }
+            .cover-eyebrow::before,
+            .cover-eyebrow::after { width: 24px; }
+            .cover-sub { letter-spacing: 3px; font-size: 0.72rem; }
+        }
+
+        /* ===== 减少动画 ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .cursor-glow, .cursor-dot { display: none !important; }
+            body { cursor: auto; }
+            a, button, .card, .skill-row, .explore-card, .edu-block,
+            .cert-card, .award, .navbar-links a, .theme-toggle, .back-top,
+            .competition-card, .music-toggle, .myself-btn {
+                cursor: auto;
+            }
+            .music-toggle { animation: none; }
+            .music-toggle.playing .music-icon { animation: none; }
+            .music-toggle.attention { animation: none; }
+            .cover .galaxy-nebula,
+            .cover .galaxy-spiral,
+            .cover .shooting-star,
+            .myself-halo,
+            .myself-btn { animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+         封面 / 门户
+         ================================================================ -->
+    <div class="cover" id="cover">
+        <div class="galaxy-nebula"></div>
+        <div class="galaxy-spiral"></div>
+        <canvas id="cover-stars"></canvas>
+        <span class="shooting-star s1"></span>
+        <span class="shooting-star s2"></span>
+        <span class="shooting-star s3"></span>
+
+        <span class="cover-corner tl">Portfolio · 2026</span>
+        <span class="cover-corner tr">Resume</span>
+        <span class="cover-corner bl">Song Yuxuan</span>
+        <span class="cover-corner br">North China Electric Power University</span>
+
+        <div class="cover-inner">
+            <span class="cover-eyebrow">Welcome to my universe</span>
+
+            <button class="myself-btn" id="myselfBtn" aria-label="进入简历">
+                <span class="myself-halo"></span>
+                <span>myself</span>
+            </button>
+
+            <span class="cover-sub">— 宋昱璇 · 个人简历 —</span>
+        </div>
+
+        <div class="cover-hint">
+            <span>Click to enter</span>
+            <span class="arrow"></span>
+        </div>
+    </div>
+
+    <!-- 鼠标追踪光圈 -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- 星空粒子画布 -->
+    <canvas id="universe-canvas"></canvas>
+
+    <!-- ===== 导航栏 ===== -->
+    <nav class="navbar" role="navigation" aria-label="主导航">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="brand-icon"></span>
+                宋昱璇
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="展开菜单">☰</button>
+            <ul class="navbar-links" id="navLinks">
+                <li><a href="#section-hero" class="active">摘要</a></li>
+                <li><a href="#section-highlights">亮点</a></li>
+                <li><a href="#section-skills">技能</a></li>
+                <li><a href="#section-competition">竞赛</a></li>
+                <li><a href="#section-explore">探索</a></li>
+                <li><a href="#section-education">教育</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== 音乐播放按钮（显眼位置） ===== -->
+    <audio id="bgm" src="ii.ogg" loop preload="auto"></audio>
+    <button class="music-toggle" id="musicToggle" aria-label="点击播放音乐" title="点击播放音乐">
+        <span class="music-icon">🎵</span>
+        <span class="music-text" id="musicText">点击播放音乐</span>
+    </button>
+
+    <!-- 主题切换 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换深浅色模式">🌓</button>
+
+    <!-- ===== 主内容 ===== -->
+    <main class="container" id="app">
+
+        <!-- Hero -->
+        <section id="section-hero" class="hero section">
+            <div class="container">
+                <div class="hero-content">
+                    <span class="hero-eyebrow reveal">Personal Resume</span>
+                    <div class="hero-name-wrapper reveal">
+                        <h1 class="hero-name">宋昱璇 <span style="opacity:0.4;font-weight:300;">·</span> ☕</h1>
+                    </div>
+                    <div class="hero-quote reveal">“It always seems impossible until it is done.” ✧(≖ ◡ ≖✿)</div>
+                    <div class="hero-title reveal">信息管理与信息系统 · 本科 🌱</div>
+                    <p class="hero-summary reveal">
+                        具备数据分析与人工智能实践能力的复合型背景，熟悉数据全链路处理与模型调优。
+                        拥有达摩院人工智能训练师（初/高级）认证，善于将技术转化为业务洞察。
+                        兼具书法艺术修养与校园活动组织经验，沟通协作能力突出。ʕ•ᴥ•ʔ
+                    </p>
+                    <div class="hero-tags reveal" id="heroTags"></div>
+                    <div class="hero-contact reveal" id="heroContact"></div>
+                </div>
+                <div class="hero-right reveal">
+                    <div class="profile-card">
+                        <img class="hero-avatar" src="tx.jpg" alt="微信头像" loading="lazy"
+                            onerror="this.style.opacity='0.3';this.alt='头像加载失败'">
+                        <span class="profile-divider"></span>
+                        <img class="hero-qrcode" src="m.jpg" alt="微信二维码" loading="lazy"
+                            onerror="this.style.opacity='0.3';this.alt='二维码加载失败'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 亮点成果 -->
+        <section id="section-highlights" class="section">
+            <div class="section-head reveal">
+                <span class="section-index">01</span>
+                <div class="section-head-text">
+                    <span class="section-eyebrow">Highlights</span>
+                    <h2 class="section-title"><span class="title-icon">⚡</span> 亮点成果</h2>
+                </div>
+                <span class="section-line"></span>
+            </div>
+            <div class="highlights-band" id="highlightsContainer"></div>
+        </section>
+
+        <!-- 专业技能 -->
+        <section id="section-skills" class="section">
+            <div class="section-head reveal">
+                <span class="section-index">02</span>
+                <div class="section-head-text">
+                    <span class="section-eyebrow">Skills</span>
+                    <h2 class="section-title"><span class="title-icon">🛠️</span> 专业技能</h2>
+                </div>
+                <span class="section-line"></span>
+            </div>
+            <div class="skills-panel" id="skillsGrid"></div>
+        </section>
+
+        <!-- 竞赛经历 -->
+        <section id="section-competition" class="section">
+            <div class="section-head reveal">
+                <span class="section-index">03</span>
+                <div class="section-head-text">
+                    <span class="section-eyebrow">Competition</span>
+                    <h2 class="section-title"><span class="title-icon">🏆</span> 竞赛经历</h2>
+                </div>
+                <span class="section-line"></span>
+            </div>
+            <div class="competition-card" id="competitionCard"></div>
+        </section>
+
+        <!-- 编程探索 -->
+        <section id="section-explore" class="section">
+            <div class="section-head reveal">
+                <span class="section-index">04</span>
+                <div class="section-head-text">
+                    <span class="section-eyebrow">Exploration</span>
+                    <h2 class="section-title"><span class="title-icon">🚀</span> 编程探索</h2>
+                </div>
+                <span class="section-line"></span>
+            </div>
+            <div class="explore-card reveal" id="exploreCard"></div>
+        </section>
+
+        <!-- 教育与证书 -->
+        <section id="section-education" class="section">
+            <div class="section-head reveal">
+                <span class="section-index">05</span>
+                <div class="section-head-text">
+                    <span class="section-eyebrow">Education &amp; Honors</span>
+                    <h2 class="section-title"><span class="title-icon">🎓</span> 教育与证书</h2>
+                </div>
+                <span class="section-line"></span>
+            </div>
+            <div id="eduAwardsContainer"></div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>© 2026 宋昱璇 · 更新于 2026年9月 · Made with 💛 &amp; ☕</p>
+        </footer>
+
+    </main>
+
+    <!-- ===== 返回顶部 ===== -->
+    <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+
+    <!-- ===== 证书灯箱 ===== -->
+    <div class="cert-lightbox" id="certLightbox">
+        <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+        <img id="lbImage" src="" alt="">
+        <div class="lb-caption" id="lbCaption"></div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  数据
+        // ================================================================
+        const resume = {
+            name: '宋昱璇',
+            contact: {
+                phone: '15238105281',
+                email: '3905736672@qq.com',
+                address: '保定 · 华北电力大学',
+                wechat: 'My.recent'
+            },
+            highlights: [
+                { number: '89.2%', label: '图像分类模型准确率' },
+                { number: '40%', label: '交易平台任务时长缩短' },
+                { number: '200ms', label: '数据库查询响应优化' }
+            ],
+            education: {
+                school: '华北电力大学',
+                major: '信息管理与信息系统',
+                degree: '本科',
+                period: '2024年9月 – 2028年6月（预期）',
+                courses: '数据结构与算法、数据库原理、运筹学、管理信息系统、Python数据分析、统计学、企业资源规划（ERP）'
+            },
+            skills: [
+                { name: '编程与数据分析 🐍', items: ['Python (Pandas/NumPy/Matplotlib/Scikit-learn)', 'SQL (MySQL/PostgreSQL)', 'Excel (高级函数/透视表/Power Query/VBA)'] },
+                { name: 'AI与机器学习 🤖', items: ['数据标注规范 (图像/文本)', '模型训练与超参调优', '模型评估 (混淆矩阵/ROC-AUC)', '达摩院人工智能训练师 (初/高级)'] },
+                { name: '可视化与原型 🎨', items: ['Tableau', 'Power BI', 'FineReport', 'Figma', 'Xmind'] },
+                { name: '办公协作与语言 💼', items: ['Microsoft Office', 'Notion', 'Confluence', 'Trello', '中文 (母语)'] },
+                { name: '趣味编程小项目 🎮', items: ['Python 坦克大战小游戏 (自研)'] }
+            ],
+            competition: {
+                title: 'RST 竞赛 · 筹备中',
+                status: '正在备赛',
+                meta: '2026年 · 团队赛 / 个人备赛',
+                tech: ['Python', 'AI 编程', '机器学习基础', '算法思维'],
+                details: [
+                    '近期正在筹备参加 RST 竞赛，这是我在专业课程之外主动选择的一次挑战。出于对人工智能方向的兴趣，希望借竞赛的机会把课堂上学到的知识真正用起来。',
+                    '为备赛系统学习 AI 编程相关内容，包括机器学习基础概念、常见模型的训练与调参思路，以及如何用 Python 完成数据处理与特征工程。',
+                    '备赛过程中坚持“边学边练”的节奏：先理解原理，再动手复现小实验，遇到不懂的地方就查阅官方文档和技术社区，逐步搭建起对 AI 编程的整体认知。',
+                    '目前仍处于学习和准备阶段，希望通过这次竞赛进一步检验自己的动手能力，也让自己在真实的赛题环境中积累经验、发现不足。'
+                ]
+            },
+            explore: {
+                title: 'Python 坦克大战小游戏',
+                meta: '个人兴趣项目 · 自学实践 · 2025年',
+                tech: ['Python', 'pygame', '面向对象编程', '事件循环'],
+                details: [
+                    '出于对游戏开发的兴趣，在课余时间自学 pygame 库，从零开始尝试做一个能跑起来的坦克大战小游戏，这也是我第一次把 Python 用到数据分析之外的方向。',
+                    '实现了坦克的上下左右移动、子弹发射、子弹与坦克/砖块的碰撞检测，以及简单的敌方坦克追踪逻辑。过程中逐步理解了游戏主循环、事件监听与画面刷新的基本机制。',
+                    '调试时遇到过帧率忽快忽慢、碰撞判定偶尔“穿墙”等问题，通过查阅 pygame 官方文档和社区帖子，一点点定位并修复，也让我养成了先把功能跑通、再逐步优化的习惯。',
+                    '这个小项目不算复杂，但它让我体会到编程的另一种乐趣——不只是处理数据，也可以做出能玩的东西。它让我更愿意主动去尝试课堂之外的技术方向。'
+                ],
+                video: {
+                    src: 'tkdz.mp4',
+                    caption: '▲ 游戏运行实录：坦克移动、射击与碰撞判定（自制 Demo）'
+                }
+            },
+            awards: [
+                { name: '达摩院人工智能训练师（初级 / 高级）认证', source: '阿里巴巴', date: '2025年8月' },
+                { name: '全国书法大赛 银奖', source: null, date: '2025年' }
+            ]
+        };
+
+        // ================================================================
+        //  辅助函数
+        // ================================================================
+        const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+        const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+        const safeText = (val) => val || '';
+        const buildEmail = (email) => {
+            if (!email) return '';
+            const parts = email.split('@');
+            if (parts.length !== 2) return email;
+            return parts[0] + '[@]' + parts[1];
+        };
+
+        // ================================================================
+        //  渲染函数
+        // ================================================================
+        function renderHeroTags() {
+            const tags = ['Python 🐍', 'SQL', 'XGBoost', 'PyTorch', '达摩院AI训练师', 'Tableau', 'Figma'];
+            const container = $('#heroTags');
+            container.innerHTML = tags.map(t =>
+                `<span class="tag ${t === '达摩院AI训练师' ? 'highlight' : ''}">${t}</span>`
+            ).join('');
+        }
+
+        function renderHeroContact() {
+            const c = resume.contact;
+            const container = $('#heroContact');
+            const items = [];
+            if (c.phone) {
+                items.push(`
+                    <span class="item">
+                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        ${c.phone}
+                    </span>
+                `);
+            }
+            if (c.email) {
+                const encoded = buildEmail(c.email);
+                const real = c.email;
+                items.push(`
+                    <span class="item">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span id="emailDisplay">${encoded}</span>
+                        <button class="copy-btn" data-email="${real}" aria-label="复制邮箱">复制</button>
+                    </span>
+                `);
+            }
+            if (c.address) {
+                items.push(`
+                    <span class="item">
+                        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        ${c.address}
+                    </span>
+                `);
+            }
+            if (c.wechat) {
+                items.push(`
+                    <span class="item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 11.5a7.5 7.5 0 0 0-7.5-7.5c-3.6 0-6.6 2.5-7.2 5.8"/><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5c-2.9 0-5.4-1.7-6.7-4.2"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>
+                        ${c.wechat} 💬
+                    </span>
+                `);
+            }
+            container.innerHTML = items.join('');
+            container.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const email = this.getAttribute('data-email');
+                    if (email) {
+                        navigator.clipboard.writeText(email).then(() => {
+                            const orig = this.textContent;
+                            this.textContent = '✓ 已复制';
+                            setTimeout(() => { this.textContent = orig; }, 1800);
+                        }).catch(() => {
+                            const inp = document.createElement('input');
+                            inp.value = email;
+                            document.body.appendChild(inp);
+                            inp.select();
+                            document.execCommand('copy');
+                            inp.remove();
+                            const orig = this.textContent;
+                            this.textContent = '✓ 已复制';
+                            setTimeout(() => { this.textContent = orig; }, 1800);
+                        });
+                    }
+                });
+            });
+        }
+
+        function renderHighlights() {
+            const container = $('#highlightsContainer');
+            const emojis = ['🎯', '⏱️', '⚡'];
+            container.innerHTML = resume.highlights.map((h, i) =>
+                `<div class="stat reveal"><div class="number">${h.number} ${emojis[i] || ''}</div><div class="label">${h.label}</div></div>`
+            ).join('');
+        }
+
+        function renderSkills() {
+            const container = $('#skillsGrid');
+            container.innerHTML = resume.skills.map(g => `
+                <div class="skill-row reveal">
+                    <h4>${g.name}</h4>
+                    <div class="chips">${g.items.map(t => {
+                        const isFun = t.indexOf('坦克大战') !== -1;
+                        return `<span class="${isFun ? 'fun' : ''}">${t}</span>`;
+                    }).join('')}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderCompetition() {
+            const container = $('#competitionCard');
+            const c = resume.competition;
+            if (!c) return;
+            const techHtml = c.tech ? `<div class="tech">${c.tech.map(t => `<span>${t}</span>`).join('')}</div>` : '';
+            container.innerHTML = `
+                <div class="comp-head">
+                    <span class="comp-title">
+                        🏆 ${safeText(c.title)}
+                        <span class="comp-status">${safeText(c.status)}</span>
+                    </span>
+                    <span class="comp-meta">${safeText(c.meta)}</span>
+                </div>
+                ${techHtml}
+                <ul>${c.details.map(d => `<li>${d}</li>`).join('')}</ul>
+            `;
+        }
+
+        function renderExplore() {
+            const container = $('#exploreCard');
+            const e = resume.explore;
+            if (!e) return;
+
+            const techHtml = e.tech ? `<div class="tech">${e.tech.map(t => `<span>${t}</span>`).join('')}</div>` : '';
+
+            let videoHtml = '';
+            if (e.video && e.video.src) {
+                videoHtml = `
+                    <div class="video-wrap">
+                        <div class="video-title"><span class="dot"></span>项目演示 Video</div>
+                        <div class="video-frame">
+                            <video src="${e.video.src}" controls preload="metadata" playsinline>
+                                您的浏览器不支持 HTML5 视频播放，可下载 tkdz.mp4 查看。
+                            </video>
+                        </div>
+                        ${e.video.caption ? `<div class="video-caption">${e.video.caption}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="explore-head">
+                    <span class="explore-title">🎮 ${safeText(e.title)}</span>
+                    <span class="explore-meta">${safeText(e.meta)}</span>
+                </div>
+                ${techHtml}
+                <ul>${e.details.map(d => `<li>${d}</li>`).join('')}</ul>
+                ${videoHtml}
+            `;
+        }
+
+        function renderEduAwards() {
+            const container = $('#eduAwardsContainer');
+            const edu = resume.education;
+            const awards = resume.awards;
+
+            let html = '';
+
+            html += '<div class="edu-awards-grid">';
+
+            if (edu) {
+                const coursesHtml = edu.courses ? `<div class="courses">📚 主修课程：${edu.courses}</div>` : '';
+                html += `
+                    <div class="edu-block reveal">
+                        <div class="school">${safeText(edu.school)} 🏫</div>
+                        <div class="major">${safeText(edu.major)} · ${safeText(edu.degree)}</div>
+                        <div class="period">${safeText(edu.period)}</div>
+                        ${coursesHtml}
+                    </div>
+                `;
+            }
+
+            if (awards && awards.length) {
+                const validAwards = awards.filter(a => a.name);
+                if (validAwards.length) {
+                    html += `
+                        <div class="awards-panel reveal">
+                            <div class="awards-heading">🏅 获奖与认证</div>
+                            <div class="awards-list">
+                                ${validAwards.map(a => `
+                                    <div class="award">
+                                        <span class="name">${a.name}</span>
+                                        <span class="source">${a.source ? ' · ' + a.source : ''}</span>
+                                        ${a.date ? `<span class="date">${a.date}</span>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            html += '</div>';
+
+            const certCards = [
+                { img: 'gaoji.jpg', alt: '高级人工智能训练师证书', label: '高级人工智能训练师', sub: '达摩院 · 2025 ✨' },
+                { img: 'rag.jpg', alt: '阿里云 Apsara Clouder RAG 认证', label: '阿里云 Apsara Clouder - RAG', sub: '专项技能认证' },
+                { img: 'vis.jpg', alt: '阿里云 Apsara Clouder VIS 认证', label: '阿里云 Apsara Clouder - VIS', sub: '专项技能认证' }
+            ];
+            const certCardHtml = certCards.map(c => `
+                <div class="cert-card reveal">
+                    <img src="${c.img}" alt="${c.alt}" loading="lazy" onerror="this.style.opacity='0.3';this.alt='图片加载失败'">
+                    <div class="cert-label">${c.label}</div>
+                    <div class="cert-sub">${c.sub}</div>
+                </div>
+            `).join('');
+            html += `
+                <div class="cert-gallery-hint"><span>📜 悬停暂停 · 证书自动展示中</span></div>
+                <div class="cert-gallery">
+                    <div class="cert-track">${certCardHtml}${certCardHtml}</div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ================================================================
+        //  封面星尘（独立粒子层）
+        // ================================================================
+        function initCoverStars() {
+            const canvas = $('#cover-stars');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const stars = [];
+            const STAR_COUNT = 140;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+
+            function createStars() {
+                stars.length = 0;
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        r: Math.random() * 1.6 + 0.3,
+                        alpha: Math.random() * 0.7 + 0.3,
+                        twinkle: Math.random() * Math.PI * 2,
+                        speed: Math.random() * 0.02 + 0.005
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                for (const s of stars) {
+                    s.twinkle += s.speed;
+                    const alpha = s.alpha * (0.6 + 0.4 * Math.sin(s.twinkle));
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(220, 232, 255, ${alpha})`;
+                    ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            }
+
+            resize();
+            createStars();
+            draw();
+
+            window.addEventListener('resize', () => {
+                resize();
+                createStars();
+            });
+        }
+
+        // ================================================================
+        //  星空粒子效果（主背景）
+        // ================================================================
+        function initUniverse() {
+            const canvas = $('#universe-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const PARTICLE_COUNT = 80;
+            const MAX_DIST = 120;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+
+            function createParticles() {
+                particles.length = 0;
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                        r: Math.random() * 1.5 + 0.5,
+                        alpha: Math.random() * 0.5 + 0.2
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = w;
+                    if (p.x > w) p.x = 0;
+                    if (p.y < 0) p.y = h;
+                    if (p.y > h) p.y = 0;
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const q = particles[j];
+                        const dx = p.x - q.x;
+                        const dy = p.y - q.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < MAX_DIST) {
+                            const opacity = (1 - dist / MAX_DIST) * 0.12;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(q.x, q.y);
+                            ctx.strokeStyle = `rgba(108, 140, 255, ${opacity})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(180, 200, 255, ${p.alpha})`;
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            resize();
+            createParticles();
+            draw();
+
+            window.addEventListener('resize', () => {
+                resize();
+                createParticles();
+            });
+        }
+
+        // ================================================================
+        //  鼠标追踪光圈
+        // ================================================================
+        function initCursorGlow() {
+            if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+
+            const glow = $('#cursorGlow');
+            const dot = $('#cursorDot');
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let glowX = mouseX;
+            let glowY = mouseY;
+            let visible = false;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+
+                if (!visible) {
+                    visible = true;
+                    glow.classList.add('active');
+                    dot.classList.add('active');
+                }
+            });
+
+            document.addEventListener('mouseleave', () => {
+                glow.classList.remove('active');
+                dot.classList.remove('active');
+                visible = false;
+            });
+            document.addEventListener('mouseenter', () => {
+                glow.classList.add('active');
+                dot.classList.add('active');
+                visible = true;
+            });
+
+            function animate() {
+                glowX += (mouseX - glowX) * 0.12;
+                glowY += (mouseY - glowY) * 0.12;
+                glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            const interactiveSelectors = 'a, button, .card, .skill-row, .explore-card, .competition-card, .edu-block, .cert-card, .award, .navbar-links a, .theme-toggle, .back-top, .music-toggle, .myself-btn, input, textarea';
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest(interactiveSelectors)) {
+                    dot.classList.add('hovering');
+                }
+            });
+            document.addEventListener('mouseout', (e) => {
+                if (e.target.closest(interactiveSelectors)) {
+                    dot.classList.remove('hovering');
+                }
+            });
+        }
+
+        // ================================================================
+        //  封面进入
+        // ================================================================
+        function initCover() {
+            const cover = $('#cover');
+            const btn = $('#myselfBtn');
+            if (!cover || !btn) return;
+
+            let entered = false;
+
+            function enterResume() {
+                if (entered) return;
+                entered = true;
+                cover.classList.add('hidden');
+                document.body.classList.add('entered');
+
+                // 进入后短暂延迟，触发滚动浮现 & 首次音乐尝试
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('scroll'));
+                }, 300);
+            }
+
+            btn.addEventListener('click', enterResume);
+
+            // 支持键盘 Enter / Space
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    enterResume();
+                }
+            });
+        }
+
+        // ================================================================
+        //  背景音乐（自动播放尝试 + 显眼按钮 + 文字提示）
+        // ================================================================
+        function initMusic() {
+            const bgm = document.getElementById('bgm');
+            const musicToggle = document.getElementById('musicToggle');
+            const musicText = document.getElementById('musicText');
+            if (!bgm || !musicToggle || !musicText) return;
+
+            let isPlaying = false;
+            bgm.volume = 0.18;
+
+            function setPlayingUI(playing) {
+                isPlaying = playing;
+                if (playing) {
+                    musicToggle.classList.add('playing');
+                    musicToggle.classList.remove('attention');
+                    musicText.textContent = '正在播放';
+                    musicToggle.setAttribute('aria-label', '暂停音乐');
+                    musicToggle.title = '暂停音乐';
+                } else {
+                    musicToggle.classList.remove('playing');
+                    musicText.textContent = '点击播放音乐';
+                    musicToggle.setAttribute('aria-label', '点击播放音乐');
+                    musicToggle.title = '点击播放音乐';
+                }
+            }
+
+            function tryPlay() {
+                const p = bgm.play();
+                if (p !== undefined) {
+                    p.then(() => {
+                        setPlayingUI(true);
+                    }).catch((err) => {
+                        console.warn('自动播放被浏览器拦截，请点击音乐按钮播放：', err);
+                        setPlayingUI(false);
+                        musicToggle.classList.add('attention');
+                        musicText.textContent = '点击播放音乐';
+                        setTimeout(() => {
+                            if (!isPlaying) {
+                                musicToggle.classList.remove('attention');
+                            }
+                        }, 5200);
+                    });
+                }
+            }
+
+            bgm.addEventListener('error', () => {
+                musicText.textContent = '音乐加载失败';
+                musicToggle.title = '音乐文件 ii.ogg 加载失败';
+                musicToggle.style.opacity = '0.6';
+                musicToggle.style.animation = 'none';
+                musicToggle.classList.remove('attention');
+            });
+
+            // 用户点击封面「myself」后，视为首次交互，尝试播放
+            window.addEventListener('myself:enter', tryPlay);
+
+            // 页面加载后也尝试一次（部分浏览器可能允许）
+            window.addEventListener('load', () => {
+                // 延迟一点，避免与封面动画冲突
+                setTimeout(tryPlay, 800);
+            });
+
+            // 首次点击/触摸页面时再尝试一次
+            function onFirstInteraction() {
+                if (!isPlaying) {
+                    tryPlay();
+                }
+                document.removeEventListener('click', onFirstInteraction);
+                document.removeEventListener('touchstart', onFirstInteraction);
+            }
+            document.addEventListener('click', onFirstInteraction, { once: true });
+            document.addEventListener('touchstart', onFirstInteraction, { once: true });
+
+            // 手动点击按钮
+            musicToggle.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                try {
+                    if (isPlaying) {
+                        bgm.pause();
+                        setPlayingUI(false);
+                    } else {
+                        await bgm.play();
+                        setPlayingUI(true);
+                    }
+                } catch (err) {
+                    console.warn('播放失败:', err);
+                    musicText.textContent = '播放失败';
+                    setTimeout(() => {
+                        if (!isPlaying) {
+                            musicText.textContent = '点击播放音乐';
+                        }
+                    }, 1500);
+                }
+            });
+        }
+
+        // ================================================================
+        //  滚动浮现
+        // ================================================================
+        function initScrollReveal() {
+            const sections = $$('.section');
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            sections.forEach(s => sectionObserver.observe(s));
+
+            const reveals = $$('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            reveals.forEach(el => revealObserver.observe(el));
+        }
+
+        // ================================================================
+        //  导航滚动高亮
+        // ================================================================
+        function initNavHighlight() {
+            const links = $$('.navbar-links a');
+            const sections = $$('.section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const top = section.offsetTop - 100;
+                    if (window.scrollY >= top) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // ================================================================
+        //  导航平滑滚动
+        // ================================================================
+        function initNavScroll() {
+            $$('.navbar-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('href');
+                    if (target && target.startsWith('#')) {
+                        const el = document.querySelector(target);
+                        if (el) {
+                            const offset = 76;
+                            const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+                            window.scrollTo({ top, behavior: 'smooth' });
+                        }
+                    }
+                    const navLinks = $('#navLinks');
+                    if (navLinks) navLinks.classList.remove('open');
+                });
+            });
+        }
+
+        // ================================================================
+        //  移动端菜单
+        // ================================================================
+        function initNavToggle() {
+            const toggle = $('#navToggle');
+            const navLinks = $('#navLinks');
+            if (toggle && navLinks) {
+                toggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('open');
+                });
+            }
+        }
+
+        // ================================================================
+        //  返回顶部
+        // ================================================================
+        function initBackTop() {
+            const btn = $('#backTop');
+            let visible = false;
+            window.addEventListener('scroll', () => {
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollY > 400 && !visible) {
+                    visible = true;
+                    btn.classList.add('visible');
+                } else if (scrollY <= 400 && visible) {
+                    visible = false;
+                    btn.classList.remove('visible');
+                }
+            });
+            btn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ================================================================
+        //  主题切换（深色/浅色）
+        // ================================================================
+        function initTheme() {
+            const toggle = $('#themeToggle');
+            const stored = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let theme = stored || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(t) {
+                if (t === 'light') {
+                    document.documentElement.style.setProperty('--bg-start', 'rgba(240, 244, 255, 0.9)');
+                    document.documentElement.style.setProperty('--bg-end', 'rgba(224, 232, 248, 0.95)');
+                    document.documentElement.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.65)');
+                    document.documentElement.style.setProperty('--card-border', 'rgba(108, 140, 255, 0.2)');
+                    document.documentElement.style.setProperty('--text', '#1a202c');
+                    document.documentElement.style.setProperty('--text-secondary', '#4a5568');
+                    document.documentElement.style.setProperty('--text-muted', '#8896aa');
+                    document.documentElement.style.setProperty('--shadow', '0 8px 32px rgba(0, 0, 0, 0.08)');
+                    document.documentElement.style.setProperty('--shadow-hover', '0 16px 48px rgba(108, 140, 255, 0.15)');
+                } else {
+                    document.documentElement.style.setProperty('--bg-start', 'rgba(8, 11, 22, 0.82)');
+                    document.documentElement.style.setProperty('--bg-end', 'rgba(4, 6, 12, 0.94)');
+                    document.documentElement.style.setProperty('--card-bg', 'rgba(20, 30, 50, 0.55)');
+                    document.documentElement.style.setProperty('--card-border', 'rgba(108, 140, 255, 0.18)');
+                    document.documentElement.style.setProperty('--text', '#E8EDF5');
+                    document.documentElement.style.setProperty('--text-secondary', '#A0B4D0');
+                    document.documentElement.style.setProperty('--text-muted', '#6A7F9F');
+                    document.documentElement.style.setProperty('--shadow', '0 8px 32px rgba(0, 0, 0, 0.5)');
+                    document.documentElement.style.setProperty('--shadow-hover', '0 16px 48px rgba(108, 140, 255, 0.12)');
+                }
+                toggle.textContent = t === 'dark' ? '☀️' : '🌙';
+            }
+
+            applyTheme(theme);
+
+            toggle.addEventListener('click', () => {
+                const current = theme;
+                theme = current === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+                applyTheme(theme);
+            });
+        }
+
+        // ================================================================
+        //  证书灯箱
+        // ================================================================
+        function initCertLightbox() {
+            const lightbox = $('#certLightbox');
+            const lbImg = $('#lbImage');
+            const lbCaption = $('#lbCaption');
+            const lbClose = $('#lbClose');
+            if (!lightbox) return;
+
+            function openLightbox(src, alt, caption) {
+                lbImg.src = src;
+                lbImg.alt = alt;
+                lbCaption.textContent = caption;
+                lightbox.classList.add('open');
+            }
+            function closeLightbox() {
+                lightbox.classList.remove('open');
+                lbImg.src = '';
+            }
+
+            document.addEventListener('click', e => {
+                const card = e.target.closest('.cert-card');
+                if (card) {
+                    const img = card.querySelector('img');
+                    if (img && img.src) {
+                        const label = card.querySelector('.cert-label')?.textContent || '';
+                        const sub = card.querySelector('.cert-sub')?.textContent || '';
+                        openLightbox(img.src, img.alt, `${label} · ${sub}`);
+                    }
+                }
+            });
+
+            lightbox.addEventListener('click', e => {
+                if (e.target === lightbox || e.target === lbClose) {
+                    closeLightbox();
+                }
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+                    closeLightbox();
+                }
+            });
+        }
+
+        // ================================================================
+        //  初始化
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderHeroTags();
+            renderHeroContact();
+            renderHighlights();
+            renderSkills();
+            renderCompetition();
+            renderExplore();
+            renderEduAwards();
+            initCoverStars();
+            initUniverse();
+            initCursorGlow();
+            initCover();
+            initMusic();
+            initScrollReveal();
+            initCertLightbox();
+            initNavHighlight();
+            initNavScroll();
+            initNavToggle();
+            initBackTop();
+            initTheme();
+        });
+    </script>
+
+</body>
+</html>
