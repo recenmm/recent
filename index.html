@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>宋昱璇 · 个人简历</title>
     <style>
+        /* ================================================================
+           自托管花体字（myself-font.ttf 与 index.html 同级）
+           ================================================================ */
+        @font-face {
+            font-family: "MyselfFont";
+            src: url("myself-font.ttf") format("truetype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         /* ===== 全局重置 ===== */
         * {
             margin: 0;
@@ -58,7 +69,7 @@
         }
 
         /* ================================================================
-           封面 / 门户（Cover / Portal）
+           封面 / 门户
            ================================================================ */
         .cover {
             position: fixed;
@@ -82,7 +93,6 @@
             pointer-events: none;
         }
 
-        /* 银河系星云背景层 */
         .cover .galaxy-nebula {
             position: absolute;
             inset: -20%;
@@ -100,7 +110,6 @@
             100% { transform: translate(2%, -1%) scale(1.02); }
         }
 
-        /* 银河螺旋光带 */
         .cover .galaxy-spiral {
             position: absolute;
             top: 50%;
@@ -127,7 +136,6 @@
             to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* 封面上的星尘粒子（由 JS 绘制，与主画布分开） */
         #cover-stars {
             position: absolute;
             inset: 0;
@@ -136,7 +144,6 @@
             pointer-events: none;
         }
 
-        /* 流星 */
         .cover .shooting-star {
             position: absolute;
             width: 180px;
@@ -191,7 +198,6 @@
             }
         }
 
-        /* 封面内容容器 */
         .cover-inner {
             position: relative;
             z-index: 3;
@@ -208,7 +214,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 小标题 */
         .cover-eyebrow {
             display: inline-flex;
             align-items: center;
@@ -233,7 +238,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ====== 核心：myself 英文花体引导按钮 ====== */
+        /* ====== 核心：myself 花体引导按钮 ====== */
         .myself-btn {
             position: relative;
             display: inline-block;
@@ -241,12 +246,12 @@
             background: none;
             border: none;
             cursor: none;
-            font-family: "Snell Roundhand", "Apple Chancery", "Brush Script MT",
-                         "Segoe Script", "Gabriola", "Lucida Handwriting", cursive, serif;
-            font-style: italic;
-            font-size: clamp(4.2rem, 13vw, 9rem);
+            font-family: "MyselfFont", "Snell Roundhand", "Apple Chancery",
+                         "Brush Script MT", "Segoe Script", cursive, serif;
+            font-style: normal;
+            font-size: clamp(4.5rem, 14vw, 10rem);
             font-weight: 400;
-            line-height: 1;
+            line-height: 1.15;
             letter-spacing: 2px;
             color: transparent;
             background-image: linear-gradient(
@@ -269,7 +274,7 @@
         }
         .myself-btn span {
             display: inline-block;
-            transform: translateY(0.06em);
+            transform: translateY(0.02em);
         }
         @keyframes myselfGlow {
             0%, 100% {
@@ -306,7 +311,6 @@
             transform: translateY(-1px) scale(1.01);
         }
 
-        /* 环绕光晕 */
         .myself-halo {
             position: absolute;
             top: 50%;
@@ -326,7 +330,6 @@
             50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.08); }
         }
 
-        /* 副标题 */
         .cover-sub {
             font-size: 0.86rem;
             letter-spacing: 5px;
@@ -336,7 +339,6 @@
             animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) 1.1s both;
         }
 
-        /* 底部提示 */
         .cover-hint {
             position: absolute;
             bottom: 38px;
@@ -366,7 +368,6 @@
             50% { transform: rotate(45deg) translateY(5px); opacity: 1; }
         }
 
-        /* 封面右上角的装饰文本 */
         .cover-corner {
             position: absolute;
             font-size: 0.66rem;
@@ -380,7 +381,6 @@
         .cover-corner.bl { bottom: 30px; left: 34px; }
         .cover-corner.br { bottom: 30px; right: 34px; text-align: right; }
 
-        /* 主内容初始隐藏，进入后显示 */
         body.entered main,
         body.entered .navbar,
         body.entered .music-toggle,
@@ -394,7 +394,7 @@
         }
 
         /* ================================================================
-           以下为主简历样式（与原文件一致，略作裁剪）
+           主简历样式
            ================================================================ */
         @media (hover: none) and (pointer: coarse) {
             body { cursor: auto; }
@@ -1871,7 +1871,7 @@
         </div>
     </nav>
 
-    <!-- ===== 音乐播放按钮（显眼位置） ===== -->
+    <!-- ===== 音乐播放按钮 ===== -->
     <audio id="bgm" src="ii.ogg" loop preload="auto"></audio>
     <button class="music-toggle" id="musicToggle" aria-label="点击播放音乐" title="点击播放音乐">
         <span class="music-icon">🎵</span>
@@ -2490,7 +2490,11 @@
                 cover.classList.add('hidden');
                 document.body.classList.add('entered');
 
-                // 进入后短暂延迟，触发滚动浮现 & 首次音乐尝试
+                // 通知音乐模块：用户已交互
+                try {
+                    window.dispatchEvent(new Event('myself:enter'));
+                } catch (e) { /* noop */ }
+
                 setTimeout(() => {
                     window.dispatchEvent(new Event('scroll'));
                 }, 300);
@@ -2498,7 +2502,6 @@
 
             btn.addEventListener('click', enterResume);
 
-            // 支持键盘 Enter / Space
             btn.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -2508,7 +2511,7 @@
         }
 
         // ================================================================
-        //  背景音乐（自动播放尝试 + 显眼按钮 + 文字提示）
+        //  背景音乐
         // ================================================================
         function initMusic() {
             const bgm = document.getElementById('bgm');
@@ -2562,16 +2565,12 @@
                 musicToggle.classList.remove('attention');
             });
 
-            // 用户点击封面「myself」后，视为首次交互，尝试播放
             window.addEventListener('myself:enter', tryPlay);
 
-            // 页面加载后也尝试一次（部分浏览器可能允许）
             window.addEventListener('load', () => {
-                // 延迟一点，避免与封面动画冲突
                 setTimeout(tryPlay, 800);
             });
 
-            // 首次点击/触摸页面时再尝试一次
             function onFirstInteraction() {
                 if (!isPlaying) {
                     tryPlay();
@@ -2582,7 +2581,6 @@
             document.addEventListener('click', onFirstInteraction, { once: true });
             document.addEventListener('touchstart', onFirstInteraction, { once: true });
 
-            // 手动点击按钮
             musicToggle.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 try {
@@ -2714,7 +2712,7 @@
         }
 
         // ================================================================
-        //  主题切换（深色/浅色）
+        //  主题切换
         // ================================================================
         function initTheme() {
             const toggle = $('#themeToggle');
